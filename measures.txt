@@ -1,0 +1,59 @@
+1) Average Rating = AVERAGE('IMDB-Movie-Data'[Rating])
+
+2) Average Revenue = AVERAGE ( 'IMDB-Movie-Data'[Revenue (Millions)] )
+
+3) Average Runtime = AVERAGE ( 'IMDB-Movie-Data'[Runtime (Minutes)] )
+
+4) Highest Genre Name = 
+CONCATENATEX(
+    TOPN(
+        1,
+        SUMMARIZE(
+            'IMDB-Movie-Data',
+            'IMDB-Movie-Data'[Genre],
+            "MovieCount", COUNTROWS('IMDB-Movie-Data')
+        ),
+        [MovieCount],
+        DESC
+    ),
+    'IMDB-Movie-Data'[Genre],
+    ", "
+)
+
+5) Highest Movie Revenue = MAX ( 'IMDB-Movie-Data'[Revenue (Millions)] )
+
+6) MOVIE COUNT = DISTINCTCOUNT('IMDB-Movie-Data'[Title])
+
+7) Top 10 % Contribution = DIVIDE([Top 10 Revenue], [Total Revenue], 0)
+
+8) Top 10 Revenue = 
+SUMX(
+    TOPN(
+        10,
+        'IMDB-Movie-Data',
+        'IMDB-Movie-Data'[Revenue (Millions)],
+        DESC
+    ),
+    'IMDB-Movie-Data'[Revenue (Millions)]
+)
+
+9) Top Year = 
+CALCULATE(
+    MAX('IMDB-Movie-Data'[Year]),
+    FILTER(
+        SUMMARIZE('IMDB-Movie-Data', 'IMDB-Movie-Data'[Year], "YearRevenue", SUM('IMDB-Movie-Data'[Revenue (Millions)])),
+        [YearRevenue] = MAXX(
+            SUMMARIZE('IMDB-Movie-Data', 'IMDB-Movie-Data'[Year], "YearRevenue", SUM('IMDB-Movie-Data'[Revenue (Millions)])),
+            [YearRevenue]
+            
+        )
+    )
+)
+
+10) Total Movies = COUNTROWS ( 'IMDB-Movie-Data' )
+
+11) Total Revenue = SUM('IMDB-Movie-Data'[Revenue (Millions)])
+
+12) Total Votes = SUM ( 'IMDB-Movie-Data'[Votes] )
+
+13) Unique Actors = DISTINCTCOUNT ( 'IMDB-Movie-Data'[Actors] )
